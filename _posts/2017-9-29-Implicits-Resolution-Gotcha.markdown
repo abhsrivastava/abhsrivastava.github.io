@@ -4,7 +4,7 @@ title:      "Implicit Resolution Gotcha"
 subtitle:   "While working on Slick and interesting scenario of implicit resolution came up"
 date:       2017-09-29 12:00:00
 author:     "Abhishek Srivastava"
-header-img: "img/saturn-bg.jpg"
+header-img: "img/saturn-bg3.jpg"
 ---
 
 While writing some slick code today an interesting problem poped up. Here is the code I was working on

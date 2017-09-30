@@ -4,7 +4,7 @@ title:      "Scanning Cassandra Tables with Alpakka"
 subtitle:   "Scan entire Cassandra Tables with ease with Alpakka"
 date:       2017-09-29 12:00:00
 author:     "Abhishek Srivastava"
-header-img: "img/saturn-bg.jpg"
+header-img: "img/saturn-bg4.jpg"
 ---
 
 I often have to write code to scan entire cassandra tables. The table in question here is more than 100 million rows where each row contains a hashmap with 300 keys on average.
