@@ -40,9 +40,9 @@ And now let us scan the table
   Await(future, Duration.Inf)
 ```
 
-That's it. This code is heavenly as compared the the 100s of lines of jdbc code which I use currently. Very fast as well.
+That's it. Akka Steams API also gives you nice operations like fold on the flow so that you can neatly aggregate data.
 
-Writing to cassandra is already pretty easy .. thanks to the Akka Streams Sink.
+Writing back into cassandra is already pretty easy .. thanks to the Akka Streams Sink.
 
 ```scala
    def cassandraSink(session: Session) : Sink[Foo, Future[Done]] = {
