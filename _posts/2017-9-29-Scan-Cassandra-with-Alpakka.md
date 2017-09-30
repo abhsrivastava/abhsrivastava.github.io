@@ -13,7 +13,7 @@ We have a legacy code which uses raw jdbc code using Cassandra jdbc driver and w
 
 There are plenty of folks out there who use Spark for such purposes, but I like to work without the need for bulky things like Hadoop clusters. 
 
-I came accross a technology called Alpakka today and it made scanning Cassnadra tables a breeze.
+I came accross a technology called Alpakka today and it made scanning Cassandra tables a breeze.
 
 Here is my build.sbt
 
