@@ -42,4 +42,19 @@ And now let us scan the table
 
 That's it. This code is heavenly as compared the the 100s of lines of jdbc code which I use currently. Very fast as well.
 
+Writing to cassandra is already pretty easy .. thanks to the Akka Streams Sink.
+
+```scala
+   def cassandraSink(session: Session) : Sink[Foo, Future[Done]] = {
+      implicit val s = session
+      import scala.concurrent.ExecutionContext.Implicits.global
+      val stmt = session.prepare("update foo set name = ? where id = ?")
+      val binder = (foo: Foo, statement: PreparedStatement) => statement.bind(foo.name, java.lang.Long.valueOf(foo.id))
+      CassandraSink[Foo](parallelism = 10, stmt, binder)
+   }
+
+```
+
+Now think sink can be attached to any Flow which emits a Foo.
+
 Alpakka project can be found at [Alpakka](https://developer.lightbend.com/docs/alpakka/current/) and at [Github](https://github.com/akka/alpakka)
