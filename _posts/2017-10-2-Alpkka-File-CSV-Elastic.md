@@ -13,7 +13,7 @@ Today we will look at 3 connectors. The File Connector, the CSV Connector and fi
 
 The scenario we will use is that you have a list of countries and capitals available as a [csv file](https://github.com/icyrockcom/country-capitals/blob/master/data/country-list.csv) and we have to load these into ElasticSearch.
 
-We will read the files using the File and CSV Connectors and then we will use ElasticSearch connector to create a Sink into Cassandra.
+We will read the files using the File and CSV Connectors and then we will use ElasticSearch connector to create a Sink into ElasticSearch.
 
 The build.sbt file is as follows
 
@@ -49,16 +49,16 @@ Now We need to feed these lines to the CSV Connector for tokenization. the CSV F
  val flow3 = Flow[List[ByteString]].map(_.utf8String)
 ```
 
-In the code above, we first converted our Sting (containing a line) into a ByteString, then we gave that String to the CSVParser. Which split the line into tokens (of type ByteString) then we converted each token back to a string. At this point we can load the data into a domain object of `CountryCapital`.
+In the code above, we first converted our String (containing a line) into a ByteString, then we gave that ByteString to the CSVParser. Which split the line into tokens (of type List[ByteString]) then we converted each token back to a string. At this point we can load the data into a domain object of `CountryCapital`.
 
 ```scala
 case class CountryCapital(country: String, capital: String)
 val flow4 = Flow[List[String]].map(list => CountryCapital(list(0), list(1)))
 ```
 
-The ElasticSearch Connector gives us a Sink to ElasticSearch. but that Sink must be of type IncommingMessage[JsObject]. Here the type `JsObject` is coming from the spray-json library.
+The ElasticSearch Connector gives us a Sink to ElasticSearch. but that Sink accepts a stream of objects of type `IncommingMessage[JsObject]`. Here the type `JsObject` is coming from the spray-json library.
 
-So we need to convert our domain object into the type `IncomingMessage[JsObject]` In order to facilitate this conversion we need to import a few classes which make it seamless to convert our CountryCaptial case class into Json.
+So we need to convert our domain object into the type `IncomingMessage[JsObject]` In order to facilitate this conversion we need to import a few classes which make it seamless to convert our CountryCaptial case class into spray-json JsObject.
 
 ```scala
   import DefaultJsonProtocol._
@@ -80,6 +80,8 @@ The client object provides the server name and the port of ElasticSearch. Apart 
 Finally we need to build a Runnable Graph
 
 ```scala
+implicit val actorSystem = ActorSystem()
+implicit val actorMaterializer = ActorMaterializer()
 val graph = RunnableGraph.fromGraph(GraphDSL.create(sink){implicit builder => 
 	s =>
 	import GraphDSL.Implicits._ 
