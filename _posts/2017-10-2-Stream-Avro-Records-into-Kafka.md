@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Stream Avro Records into Kafka"
+title:      "Stream Avro Records into Kafka using Avro4s and Akka Streams Kafka"
 subtitle:   "Continuing our quest to learn Akka Streams, we'll stream some Avro records into a Kafka Topic and then read them as well"
 date:       2017-10-2 12:00:00
 author:     "Abhishek Srivastava"
