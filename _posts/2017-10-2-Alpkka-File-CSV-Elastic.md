@@ -107,4 +107,4 @@ In my case it showed me 231 rows.
 
 One big Gotcha was that when you inject IncomingMessgaes into Elastic make sure that the ID is a GUID. For me the data load operaiton just loaded 51 rows when I was trying to use Country as a key.
 
-The whole application can be found at my [github](https://github.com/abhsrivastava/ElasticAlpakkaStreams.)
+The whole application can be found at my [github](https://github.com/abhsrivastava/ElasticAlpakkaStreams).
