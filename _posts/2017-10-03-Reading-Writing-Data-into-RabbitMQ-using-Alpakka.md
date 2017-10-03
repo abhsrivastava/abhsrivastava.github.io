@@ -2,7 +2,7 @@
 layout:     post
 title:      "Reading and Writing data into RabbitMQ using Alpakka"
 subtitle:   "Part III of the series on Alpakka"
-date:       2017-10-2 12:00:00
+date:       2017-10-03 12:00:00
 author:     "Abhishek Srivastava"
 header-img: "img/saturn-bg3.jpg"
 ---
