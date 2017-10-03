@@ -68,14 +68,14 @@ libraryDependencies ++= Seq(
 So first we will write some data into RabbitMQ. Jumping straight to the meat, let us crate the Akka Streams sink.
 
 ```scala
-   val queueName = "myqueue"
-   val queueDeclaration = QueueDeclaration(queueName, durable = true)
-   val uri = "amqp://abhi:abhi@abhisheks-mini:5672/myvhost"
-   val settings = AmqpSinkSettings(AmqpConnectionUri(uri))
-      .withRoutingKey("foobar")
-      .withExchange("exchange")
-      .withDeclarations(queueDeclaration)
-   val amqpSink = AmqpSink.simple(settings)
+  val queueName = "myqueue"
+  val queueDeclaration = QueueDeclaration(queueName, durable = true)
+  val uri = "amqp://abhi:abhi@abhisheks-mini:5672/myvhost"
+  val settings = AmqpSinkSettings(AmqpConnectionUri(uri))
+   .withRoutingKey("foobar")
+   .withExchange("exchange")
+   .withDeclarations(queueDeclaration)
+  val amqpSink = AmqpSink.simple(settings)
 ```
 
 Quite straightfoward. We declare our queue, we create a settings object which contains the URI of the location where we want to connect. Ofcourse, we need to specify our routing key and our exchange.
@@ -85,44 +85,44 @@ This gives us a Akka Streams Sink which accepts a stream of objects of type `akk
 This is really convenient because we have already seen how to read our file as a stream of Bytestream in previous two blog entries.
 
 ```scala
-   val resource = getClass.getResource("/countrycapital.csv")
-   val path = Paths.get(resource.toURI)
-   val source = FileTailSource.lines(path, 8092, 100 millis).map{x => println(x); x}.map(ByteString(_))
+  val resource = getClass.getResource("/countrycapital.csv")
+  val path = Paths.get(resource.toURI)
+  val source = FileTailSource.lines(path, 8092, 100 millis).map{x => println(x); x}.map(ByteString(_))
 ```
 
 So now we have a source of type ByteSream and we have a sink which accepts a type of ByteStream. Time to build our graph and execute it.
 
 ```scala
-   val graph = RunnableGraph.fromGraph(GraphDSL.create(amqpSink){implicit builder =>
-      s =>
-         import GraphDSL.Implicits._
-         source ~> s.in
-         ClosedShape
-   })
-   val future = graph.run()
-   future.onComplete { _ =>
-      actorSystem.terminate()
-   }
-   Await.result(actorSystem.whenTerminated, Duration.Inf)
+  val graph = RunnableGraph.fromGraph(GraphDSL.create(amqpSink){implicit builder =>
+   s =>
+      import GraphDSL.Implicits._
+      source ~> s.in
+      ClosedShape
+  })
+  val future = graph.run()
+  future.onComplete { _ =>
+    actorSystem.terminate()
+  }
+  Await.result(actorSystem.whenTerminated, Duration.Inf)
 ```
 
 Now in order to read the data we just wrote into our queue. we need to build a Akka Streams source for RabbitMQ.
 
 ```scala
-   val queueName = "queue"
-   val queueDeclaration = QueueDeclaration(queueName, durable = true)
-   val uri = "amqp://abhi:abhi@abhisheks-mini:5672/myvhost"
-   val amqpUri = AmqpConnectionUri(uri)
-   val namedQueueSourceSettings = NamedQueueSourceSettings(amqpUri, queueName).withDeclarations(queueDeclaration)
-   val source = AmqpSource.atMostOnceSource(namedQueueSourceSettings, bufferSize = 10)
+  val queueName = "queue"
+  val queueDeclaration = QueueDeclaration(queueName, durable = true)
+  val uri = "amqp://abhi:abhi@abhisheks-mini:5672/myvhost"
+  val amqpUri = AmqpConnectionUri(uri)
+  val namedQueueSourceSettings = NamedQueueSourceSettings(amqpUri, queueName).withDeclarations(queueDeclaration)
+  val source = AmqpSource.atMostOnceSource(namedQueueSourceSettings, bufferSize = 10)
 ```
 
 The code above is again straight forward. we provide our queue name, erver name, port and vhost. This gives us a source which reads data of type `IncommingMessage` we need to convert it into String. This can easily be done by our 3 flows (we have already used these in our previous blog entries)
 
 ```scala
-   val flow1 = Flow[IncomingMessage].map(msg => msg.bytes)
-   val flow2 = Flow[ByteString].map(_.utf8String)
-   val sink = Sink.foreach[String](println)
+  val flow1 = Flow[IncomingMessage].map(msg => msg.bytes)
+  val flow2 = Flow[ByteString].map(_.utf8String)
+  val sink = Sink.foreach[String](println)
 ```
 
 Once again. connect all the flows in a graph and execute it and you'll see all the records being read from the RabbitMQ queue.
