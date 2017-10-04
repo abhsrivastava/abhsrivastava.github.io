@@ -87,7 +87,7 @@ This is really convenient because we have already seen how to read our file as a
 ```scala
 val resource = getClass.getResource("/countrycapital.csv")
 val path = Paths.get(resource.toURI)
-val source = FileTailSource.lines(path, 8092, 100 millis).map{x => println(x); x}.map(ByteString(_))
+val source = FileIO.fromPath(path)
 ```
 
 So now we have a source of type ByteSream and we have a sink which accepts a type of ByteStream. Time to build our graph and execute it.

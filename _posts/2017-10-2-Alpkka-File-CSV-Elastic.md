@@ -36,7 +36,7 @@ Now Let us first  read the files as a stream of strings.
 ```scala
   val resource = getClass.getResource("/countrycapital.csv")
   val path = Paths.get(resource.toURI)
-  val source = FileTailSource.lines(path, 8092, 100 millis)
+  val source = FileIO.fromPath(path)
 ```
 
 I have copied the country capitial csv in the resources folder. In order to read it we need to build the path to the resource and finally feed that path to the FileTailSource. The FileTailSource gives us a stream of Strings (one for each line).
