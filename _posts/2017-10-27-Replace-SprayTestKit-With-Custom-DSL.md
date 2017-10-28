@@ -111,7 +111,7 @@ implicit class RequestOps(request: Request) {
 }
 ```
 
-That's it. now we can write a simple client program that uses our DSL
+That's it. Our [whole DSL][5] is less than 50 lines of code. Now we can write a simple client program that uses our DSL
 
 ```scala
 import com.abhi.webservice.testkit.WebServiceTestKit._
@@ -133,6 +133,7 @@ It's important not to forget to import `import io.circe.generic.auto._` because 
 
 This DSL is not a drop in replacement for the SprayTestKit because we made some changes, so I still had to spend 1 day doing search and replace in my code to make minor code changes. But in the end all my 400+ test cases ran and i removed the dependency on spray client and spray test kit from my code.
 
+
 I am uploading my code [here][3].
 
 
@@ -140,3 +141,4 @@ I am uploading my code [here][3].
 [2]: https://github.com/abhsrivastava/WebServiceTestKit/blob/master/src/main/scala/com/abhi/webservice/testkit/StatusCodes.scala
 [3]: https://github.com/abhsrivastava/WebServiceTestKit
 [4]: http://http4s.org
+[5]: https://github.com/abhsrivastava/WebServiceTestKit/blob/master/src/main/scala/com/abhi/webservice/testkit/WebServiceTestKit.scala
