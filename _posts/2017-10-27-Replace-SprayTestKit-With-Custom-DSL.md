@@ -7,9 +7,7 @@ author:     "Abhishek Srivastava"
 header-img: "img/saturn-bg4.jpg"
 ---
 
-I work on a Scala application which has several hundered test cases written in [SprayTestKit][1]. One of the challenges in migrating this application to a new technology is that the moment we replace spray all our test cases break. (because test cases depend on spray). While everyone is quite eager to replace spray with latest and greatest technoogy stack, almost no one wants to rewrite these test cases.
-
-I wanted a way to decouple our test cases from SprayTestKit without having to write these all the test cases.
+I work on a Scala application which has several hundered test cases written in [SprayTestKit][1]. One of the challenges in migrating this application to a new technology is that the moment we replace spray all our test cases break. (because test cases depend on spray). This makes the migration project more complex because we need to work with broken test cases during the migration. I wanted a way to decouple our test cases from SprayTestKit without having to write these all the test cases. Once the test cases are decoupled, we can use any technology on the server side and our test cases will immidiately catch bugs if any contract is broken.
 
 Let us look at the definintion of a typical SprayTestKit test case which uses the DSL specified by the kit
 
