@@ -7,39 +7,37 @@ author:     "Abhishek Srivastava"
 header-img: "img/saturn-bg4.jpg"
 ---
 
-In one of the projects I work on, we have a Scala application which has several hundered test cases written in [SprayTestKit][1]. One of the challenges in migrating this application to a new technology is that the moment we replace spray all our test cases break. (because test cases depend on spray). While everyone is quite eager to replace spray with latest and greatest technoogy stack, almost no one wants to rewrite these test cases.
+we have a Scala application which has several hundered test cases written in [SprayTestKit][1]. One of the challenges in migrating this application to a new technology is that the moment we replace spray all our test cases break. (because test cases depend on spray). While everyone is quite eager to replace spray with latest and greatest technoogy stack, almost no one wants to rewrite these test cases.
 
 I wanted a way to decouple our test cases from SprayTestKit without having to write these all the test cases.
 
 Let us look at the definintion of a typical SprayTestKit test case which uses the DSL specified by the kit
 
 ```scala
-Get("/foo/bar", "{'name': 'test', 'age': 20}") ~> apiRoute ~> check {
-    responseAs[String] must contain("Say hello")
+Get("/foo/bar", "{'name': 'test', 'age': 20}") ~> cookie ~> apiRoute ~> check {
+   responseAs[String] must contain("Say hello")
 }
 ```
 
-I really like this a lot because this makes it so easy to write test cases for web services. its sad that this is so tied to Spray Framework. I will also make certain improvements to this DSL. The second parameter to the HTTP Verb methods takes in a string which must be the JSON representation of the request body. this forces me to call `asJson` methods again and again on my request objects. I will let my library handle the json conversion. So I will just pass case classes as the second parameter to the HTTP Verb method. Second change is that the apiRoute parameter is a little redundant because the URL to the HTTP Verb method is the one which decides where the call will be made. So why to specify the same information twice?
+I really like this a lot because this makes it so easy to write test cases for web services. We will develop a DSL which looks similar to this, but doesn't need spray framework. I will also make certain improvements to this DSL. The second parameter to the HTTP Verb methods takes in a string which must be the JSON representation of the request body. this forces me to call `asJson` methods again and again on my request objects. I will let my library handle the json conversion. So I will just pass my case classes as the second parameter to the HTTP Verb method. Second change is that the apiRoute parameter is a little redundant because the URL to the HTTP Verb method is the one which decides where the call will be made. So why to specify the same information twice?
 
-So our DSL will look like
+So our DSL will look like this
 
 ```scala
-case class SayHello(name: String)
-case class SayHelloResponse(msg: String)
-Get("/foo/bar", SayHello("foo")) ~> check { resp => 
-	val sayHello = responseAs[SayHelloResponse](resp.body)
-	assert(sayHello === SayHello("Hello World foo"))
+Get("/foo/bar", Input("test", 20)) ~> addCookie("name", "value") ~> check { resp => 
+	val output = responseAs[Output](resp.body)
+	assert(outupt === Output("Hello World foo"))
 }
 ```
 
-Here you can assume that we are calling a web service written in any programming launage which takes SayHello as a input parameter and returns a SayHelloResponse. We are assuming that the API is using JSON as the data serialization mechanism.
+Here you can assume that we are calling a web service written in any programming launage which takes json representation of SayHello as a input parameter and returns json representatino of SayHelloResponse. 
 
-So let us write our own custom DSL which looks just like the one above, but uses a library called http4s. Also, our DSL will not be tied to http4s. So tomorrow if you decided to replace http4s with something which performs better, then you can do it without making any change to your test cases.
+Another change I am made to the DSL is that the test cases doesn't need to `Cookie` object because this will directly tie the test case to the Cookie object provided by my HTTP Library. Instead I use a function which takes two strings, and I will build the cookie internally. This means that my test cases don't need to directly touch the Http library objects. This will enable me to easily switch my HTTP Library without changing my test cases again.
 
 
-So let's get the easy part out. We need an enumeration which contains all the HTTP Status codes. I simply searches the web and created a simple scala enum which contains all the codes. this enum called StatusCodes can be found [here][2].
+So let's get the easy part out. We need an enumeration which contains all the HTTP Status codes. I simply searched the web and created a simple scala enum which contains all the codes. this enum called StatusCodes can be found [here][2].
 
-So lets tackle the simple part. We need several functions which can create a Request Object for various HTTP Verbs. These can easily be created by 
+The first part of our DSL is the HTTP Verb function which creates the Request object.
 
 ```scala
 object WebServiceTestKit {
@@ -103,6 +101,7 @@ val check : (WebTestKitResponse => Unit) => Request => Unit = (f) => (req: Reque
    f(response)
 }
 ```
+
 
 Our current `~>` operator cannot be used for check function. because check function produces a function of type `Request => Unit`. but ~> expects `Request => Request`. So we will overload the `~>` method as
 
