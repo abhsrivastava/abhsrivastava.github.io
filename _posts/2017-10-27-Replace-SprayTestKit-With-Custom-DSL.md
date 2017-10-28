@@ -32,7 +32,7 @@ Get("/foo/bar", Input("test", 20)) ~> addCookie("name", "value") ~> check { resp
 
 Here you can assume that we are calling a web service written in any programming launage which takes json representation of Input as a input parameter and returns json representation of Output as response. The web service need you to provide an authentication token via a cookie.
 
-Another change I am made to the DSL is that the test cases doesn't need to `Cookie` object because this will directly tie the test case to the Cookie object provided by my HTTP Library. Instead I use a function which takes two strings, and I will build the cookie internally. This means that my test cases don't need to directly touch the Http library objects. This will enable me to easily switch my HTTP Library without changing my test cases again. Currently I will use Http4s, but tomorrow I can use anything else without changing the test case.
+Another change I am made to the DSL is that the test cases doesn't need to `Cookie` object because this will directly tie the test case to the Cookie object provided by my HTTP Library. Instead I use a function which takes two strings, and I will build the cookie internally. This means that my test cases don't need to directly touch the Http library objects. This will enable me to easily switch my HTTP Library without changing my test cases again. Currently I will use [Http4s][4], but tomorrow I can use anything else without changing the test case.
 
 
 So let's get the easy part out. We need an enumeration which contains all the HTTP Status codes. I simply searched the web and created a simple scala enum which contains all the codes. this enum called StatusCodes can be found [here][2].
@@ -140,3 +140,4 @@ I am uploading my code [here][3].
 [1]: https://github.com/spray/spray/tree/master/spray-testkit/src
 [2]: https://github.com/abhsrivastava/WebServiceTestKit/blob/master/src/main/scala/com/abhi/webservice/testkit/StatusCodes.scala
 [3]: https://github.com/abhsrivastava/WebServiceTestKit
+[4]: http://http4s.org
