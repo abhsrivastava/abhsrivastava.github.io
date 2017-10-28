@@ -7,9 +7,9 @@ author:     "Abhishek Srivastava"
 header-img: "img/saturn-bg4.jpg"
 ---
 
-I work on a Scala application which has several hundered test cases written in [SprayTestKit][1]. One of the challenges in migrating this application to a new technology is that the moment we replace spray all our test cases break. (because test cases depend on spray). This makes the migration project more complex because we need to work with broken test cases during the migration. I wanted a way to decouple our test cases from SprayTestKit without having to write these all the test cases. Once the test cases are decoupled, we can use any technology on the server side and our test cases will immidiately catch bugs if any contract is broken.
+I work on a Scala application which has several hundred test cases written in [SprayTestKit][1]. One of the challenges in migrating this application to a new technology is that the moment we replace spray all our test cases break. (because test cases depend on spray). This makes the migration project more complex because we need to work with broken test cases during the migration. I wanted a way to decouple our test cases from SprayTestKit without having to write these all the test cases. Once the test cases are decoupled, we can use any technology on the server side and our test cases will immediately catch bugs if any contract is broken.
 
-Let us look at the definintion of a typical SprayTestKit test case which uses the DSL specified by the kit
+Let us look at the definition of a typical SprayTestKit test case which uses the DSL specified by the kit
 
 ```scala
 Get("/foo/bar", "{'name': 'test', 'age': 20}") ~> cookie ~> apiRoute ~> check {
@@ -26,11 +26,11 @@ case class Input(name: String, age: Int)
 case class Output(msg: String)
 Get("/foo/bar", Input("test", 20)) ~> addCookie("name", "value") ~> check { resp => 
 	val output = responseAs[Output](resp.body)
-	assert(outupt === Output("Hello World foo"))
+	assert(output === Output("Hello World foo"))
 }
 ```
 
-Here you can assume that we are calling a web service written in any programming launage which takes json representation of Input as a input parameter and returns json representation of Output as response. The web service need you to provide an authentication token via a cookie.
+Here you can assume that we are calling a web service written in any programming language which takes json representation of Input as a input parameter and returns json representation of Output as response. The web service need you to provide an authentication token via a cookie.
 
 Another change I am made to the DSL is that the test cases doesn't need to `Cookie` object because this will directly tie the test case to the Cookie object provided by my HTTP Library. Instead I use a function which takes two strings, and I will build the cookie internally. This means that my test cases don't need to directly touch the Http library objects. This will enable me to easily switch my HTTP Library without changing my test cases again. Currently I will use [Http4s][4], but tomorrow I can use anything else without changing the test case.
 
@@ -70,7 +70,7 @@ object WebServiceTestKit {
 
 This code compiles because its our job to pass the ecoder for type T as an implicit to the HTTP Verb methods. We will use Circe automatic type derivation to pass this ecoder without writing one.
 
-Now let's go for the second part of the DSL. We need a way to attach headers and cookies to this request object. We will use some clever functional programming so that we can build our DSL.
+Now let's go for the second part of the DSL. We need a way to attach headers and cookies to this request object. We will use some functional programming so that we can build our DSL.
 
 ```scala
 val addHeader : (String, String) => Request => Request = (name, value) => (req: Request) => req.putHeaders(Header(name, value))
@@ -89,7 +89,7 @@ implicit class RequestOps(request: Request) {
 
 When we apply the `~>` operator on the Request object the compilation will fail. this will cause the compiler to look for an implicit conversion. it will convert our Request object to the RequestOps type. Luckily our functions like 'addHeader' and 'addCookie' are of type Request => Request. So we can easily do `Post(...) ~> addheader(...)`.
 
-So the last piece now is the check method. We will apply the same stragety as we did for adding headers. We will have a function called check. Which takes in a function as a input parameter. This input parameter function accepts a Respnose object and then returns another function as output. the output function is of type Request => Unit. 
+So the last piece now is the check method. We will apply the same strategy as we did for adding headers. We will have a function called check. Which takes in a function as a input parameter. This input parameter function accepts a Response object and then returns another function as output. the output function is of type Request => Unit. 
 
 ```scala
 case class WebTestKitResponse(status: StatusCodes.Value, body: String)
@@ -101,7 +101,6 @@ val check : (WebTestKitResponse => Unit) => Request => Unit = (f) => (req: Reque
    f(response)
 }
 ```
-
 
 Our current `~>` operator cannot be used for check function. because check function produces a function of type `Request => Unit`. but ~> expects `Request => Request`. So we will overload the `~>` method as
 
@@ -130,7 +129,7 @@ object Example extends App {
 }
 ```
 
-It's imporant not to forget to import `import io.circe.generic.auto._` because that gives us the Ecoder of the cases classes for free. Otherwise we will have to manually write our encoders and that won't be fun at all.
+It's important not to forget to import `import io.circe.generic.auto._` because that gives us the Encoder of the cases classes for free. Otherwise we will have to manually write our encoders and that won't be fun at all.
 
 This DSL is not a drop in replacement for the SprayTestKit because we made some changes, so I still had to spend 1 day doing search and replace in my code to make minor code changes. But in the end all my 400+ test cases ran and i removed the dependency on spray client and spray test kit from my code.
 
