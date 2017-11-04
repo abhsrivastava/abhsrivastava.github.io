@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Dependency injector of Akka Actors with Google Guice"
+title:      "Dependency injection of Akka Actors with Google Guice"
 subtitle:   "use Google Guice with Akka Actors"
 date:       2017-11-03 12:00:00
 author:     "Abhishek Srivastava"
