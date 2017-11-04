@@ -80,6 +80,7 @@ We are creating this utility class so that our client code can easily lookup act
 Now let us write a client for our actors
 
 ```scala
+import ActorUtil._
 val injector = Guice.createInjector(new MyModule)
 val myActor = injector.getActor("MyActor")
 val msg = (myActor ? MyMsg(10, 20)).mapTo[Int]
