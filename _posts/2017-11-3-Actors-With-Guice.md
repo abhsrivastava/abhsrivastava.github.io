@@ -19,7 +19,7 @@ val myActorRef : ActorRef = actorSystem.actorOf(Props(new MyActor(a, b, c)))
 
 And while this works. I still resent that now I have two ways of creating objects in my project. One via Guice approach of `injector.getInstance` and then a second approach which is specific for actors `actorOf(Props(...))` mechanism listed above. I always wished that I could use Guice consistently to get instances of actors and classes alike.
 
-In this blog, we'll try to do just that. Lets write up a quick actor. 
+In this blog, we'll try to do just that. Lets write up a minimal actor which will be used in this example.
 
 ```scala
 package com.abhi.logic
