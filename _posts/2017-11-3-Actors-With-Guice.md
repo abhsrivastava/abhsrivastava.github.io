@@ -68,9 +68,9 @@ Now we need a small utility class which will make it easy for the clients to loo
 ```scala
 object ActorUtil {
   implicit class ActorInjector(injector: Injector) = {
-  	getActor(name: String) : ActorRef = {
-  		injector.getInstance(Key.get(classOf[ActorRef], Names.named(name)))
-  	}
+    getActor(name: String) : ActorRef = {
+      injector.getInstance(Key.get(classOf[ActorRef], Names.named(name)))
+    }
   }
 }
 ```
@@ -80,9 +80,9 @@ We are creating this utility class so that our client code can easily lookup act
 Now let us write a client for our actors
 
 ```scala
-   val injector = Guice.createInjector(new MyModule)
-   val myActor = injector.getActor("MyActor")
-   val msg = (myActor ? MyMsg(10, 20)).mapTo[Int]
+val injector = Guice.createInjector(new MyModule)
+val myActor = injector.getActor("MyActor")
+val msg = (myActor ? MyMsg(10, 20)).mapTo[Int]
 ```
 
 If I was writing a class which needed the MyActor as a dependency. I could write
@@ -90,7 +90,7 @@ If I was writing a class which needed the MyActor as a dependency. I could write
 ```scala
 @Singleton
 class MyClass @Inject()(@Named("MyActor") myactor: ActorRef) {
-	myactor ! Msg(...)
+  myactor ! Msg(...)
 }
 ```
 
