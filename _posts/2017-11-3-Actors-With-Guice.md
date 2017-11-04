@@ -10,11 +10,11 @@ header-img: "img/saturn-bg5.jpg"
 I use Google Guice for dependency injection in most of my projects. I also use Akka Actors a lot for solving concurrency related tasks in my projects. I often write code like
 
 ```scala
-    val a = injector.getInstance(classOf[A])
-    val b = injector.getInstance(classOf[B])
-    val c = injector.getInstance(classOf[C])
-    val actorSystem = injector.getInstance(classOf[ActorSystem])
-	val myActorRef : ActorRef = actorSystem.actorOf(Props(new MyActor(a, b, c)))
+  val a = injector.getInstance(classOf[A])
+  val b = injector.getInstance(classOf[B])
+  val c = injector.getInstance(classOf[C])
+  val actorSystem = injector.getInstance(classOf[ActorSystem])
+  val myActorRef : ActorRef = actorSystem.actorOf(Props(new MyActor(a, b, c)))
 ```
 
 And while this works. I still resent that now I have two ways of creating objects in my project. One via Guice approach of `injector.getInstance` and then a second approach which is specific for actors `actorOf(Props(...))` mechanism listed above. I always wished that I could use Guice to get instances of actors and classes alike.
