@@ -7,7 +7,7 @@ author:     "Abhishek Srivastava"
 header-img: "img/saturn-bg5.jpg"
 ---
 
-I use Google Guice for dependency injection in most of my projects. I also use Akka Actors a lot for solving concurrency related tasks in my projects. One issue which I have always felt is that Akka has its own way of creating actors.
+I use Google Guice for dependency injection in most of my projects. I also use Akka Actors a lot for solving concurrency related tasks in my projects. I often write code like
 
 ```scala
     val a = injector.getInstance(classOf[A])
@@ -17,7 +17,7 @@ I use Google Guice for dependency injection in most of my projects. I also use A
 	val myActorRef : ActorRef = actorSystem.actorOf(Props(new MyActor(a, b, c)))
 ```
 
-And while this works. I still resent that now I have two ways of creating objects in my project. One via Guice and then via the `actorOf(Props(...))` mechanism listed above. I always wished that I could use Guice to get instances of actors and classes alike.
+And while this works. I still resent that now I have two ways of creating objects in my project. One via Guice approach of `injector.getInstance` and then a second approach which is specific for actors `actorOf(Props(...))` mechanism listed above. I always wished that I could use Guice to get instances of actors and classes alike.
 
 Lets write up a quick actor. 
 
@@ -85,7 +85,16 @@ Now let us write a client for our actors
    val msg = (myActor ? MyMsg(10, 20)).mapTo[Int]
 ```
 
-That's pretty clean. Now my client doesn't have to deal with actorOf and Props to get an instance. The client doesn't know what are the dependencies of my Actor. it just asks Guice for the ActorRef of the Actor by name without knowing anything about the dependencies of the actor.
+If I was writing a class which needed the MyActor as a dependency. I could write
+
+```scala
+@Singleton
+class MyClass @Inject()(@Named("MyActor") myactor: ActorRef) {
+	myactor ! Msg(...)
+}
+```
+
+That's pretty clean because now I can get instances of my actors using Guice mechanisms. This leads to more consistent coding style.
 
 The full code of this example is located [here][2]
 
