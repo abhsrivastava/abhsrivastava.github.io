@@ -67,8 +67,7 @@ Our whole program is a value and it should always return this value whether our 
     val hangman : IO[IOException, Unit] = ???
 ```
 
-We need a case class which holds the state of our game. Here we capture the name of the player in the name attribute. We need to capture all the guesses which the player has made in a Set and finally the word which the player has to guess. 
-We have a property which captures all the failed guesses. This helps us determine whether to terminate the game or not. We also have two properties to determine if the player won or lost.
+We need a case class which holds the state of our game. Here we capture the name of the player in the name attribute. We need to capture all the guesses which the player has made in a Set and finally the word which the player has to guess. We have a property which captures all the failed guesses. This helps us determine whether to terminate the game or not. We also have two properties to determine if the player won or lost.
 
 ```scala
 case class State(name: String, guesses: Set[Char] = Set.empty[Char], word: String) {
@@ -78,7 +77,7 @@ case class State(name: String, guesses: Set[Char] = Set.empty[Char], word: Strin
 }
 ```
 
-So now we need a long list of words from which we will randomly pick a word which our player has to guess. For this I have put a [words.txt][5] file in my github repo which has 999 words. You can add/remove words as you like. 
+We need a long list of words from which we will randomly pick a word which our player has to guess. For this I have put a [words.txt][5] file in my github repo which has 999 words. You can add/remove words as you like. 
 You have to put this file in the src/resources folder. We need to load the contents of this file in a List and then we'll randomly pick items from this list
 
 ```scala
