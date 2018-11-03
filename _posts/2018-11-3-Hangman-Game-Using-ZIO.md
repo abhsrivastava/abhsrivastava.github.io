@@ -153,7 +153,7 @@ def renderState(state: State) : IO[IOException, Unit] = {
         if (state.guesses.contains(c)) s" $c " else "   "
     ).mkString("")
     val line = List.fill(state.word.length)(" - ").mkString("")
-    val guesses = " Guesses: " + state.guesses.mkString("")
+    val guesses = " Guesses: " + state.guesses.toList.sorted.mkString("")
     val text = word + "\n" + line + "\n\n" + guesses + "\n"
     putStrLn(text)
 }
