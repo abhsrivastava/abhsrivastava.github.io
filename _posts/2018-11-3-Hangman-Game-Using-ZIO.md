@@ -67,7 +67,8 @@ Our whole program is a value and it should always return this value whether our 
     val hangman : IO[IOException, Unit] = ???
 ```
 
-We need a case class which holds the state of our game. Here the name attribute is the name of the person who is playing the game. Guesses is a set of all the guesses the player have made so far, and finally the word is the word which the player is trying to guess. When all characters which occur in the randomly chosen word have been guessed the player wins. If the number of attempts reaches 10 and all characters have not been guessed the player loses.
+We need a case class which holds the state of our game. Here we capture the name of the player in the name attribute. We need to capture all the guesses which the player has made in a Set and finally the word which the player has to guess. 
+We have a property which captures all the failed guesses. This helps us determine whether to terminate the game or not. We also have two properties to determine if the player won or lost.
 
 ```scala
 case class State(name: String, guesses: Set[Char] = Set.empty[Char], word: String) {
