@@ -35,7 +35,8 @@ lazy val root = (project in file(".")).
     name := "hangman",
     libraryDependencies ++= Seq(
       "org.scalaz" %% "scalaz-zio" % "0.3.1"
-    )
+    ),
+    trapExit := false
   )
 ```
 
