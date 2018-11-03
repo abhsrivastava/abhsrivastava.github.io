@@ -51,7 +51,7 @@ object Hangman extends App {
 }
 ```
 
-Right off the bat we see a fundamental difference between this App and the regular App which we use in Scala. This doesn't have the main method which returns Unit. Instead our main method is replaced by a run method which returns a value. This value will lazily evaluate our code.
+Right off the bat we see a fundamental difference between this App and the regular App which we use in Scala. This doesn't have the main method which returns Unit. Instead our main method is replaced by a run method which returns a value. This value represents our entire program. The runtime will lazily evaluate this program and thus our program will run.
 
 Our whole program is a value and it should always return this value whether our program runs successfully or it encouters and error. We have to do this by help of the redeem function of ScalaZ ZIO. It helps us return a value from our program in case of errors. The code below returns the value of ExitStatus(1) in case of errors and ExitStatus(0) in case of success. Note that the left side of the IO is Nothing. Here we are indicating that our program never throws an exception. This program will always return an ExitStatus.
 
