@@ -107,7 +107,7 @@ val getName : IO[IOException, String] = for {
 } yield name
 ```
 
-Why to write code this way rather than simply doing a `StdLn.readLine`? With this approach we are only expressing the intent to read a line. We are not actually reading a line. The code to read the line is inside of IO and will be lazily evaluated at the edge of our application. And that's the whole point of this application that we don't person side effects inside our code we wrap then in the IO data structure and then evaluate them outside of the code. Our code just returns a value of type `IO[IOException, String]` it doesn't actually read anything from the console.
+Why to write code this way rather than simply doing a `StdLn.readLine`? With this approach we are only expressing the intent to read a line. We are not actually reading a line. The code to read the line is inside of IO and will be lazily evaluated at the edge of our application. And that's the whole point of this application that we don't any side effects inside our code we wrap then in the IO data structure and then evaluate them outside of the code. Our code just returns a value of type `IO[IOException, String]` it doesn't actually read anything from the console.
 
 The above code is a little verbose. We can shorten it by re-writing it as 
 
