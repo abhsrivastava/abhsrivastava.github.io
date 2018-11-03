@@ -10,11 +10,11 @@ header-img: "img/space-needle-bg.jpg"
 I came across this [fantastic talk][1] delivered by [John De Goes][2] for [Scala Kiev Meetup][3]. In this talk
 he implements a small fun game called Hangman and in the process he teaches us the [ZIO][4] Library. 
 
-I found the audio of the talk to be a little choppy and so I decided to write this blog and summerize my learnings from the talk.
+I found the audio of the talk to be a little choppy and so I decided to write this blog and summarize my learnings from the talk.
 
-If you are reading this article, I'll preseume that you already know why we need things like ZIO. We wrap side effecting code into IO Monads to make it referentially transparent. This allows us to push all the side effects to the boundary of our application and thus the inner functional core of the program is preserved.
+If you are reading this article, I'll presume that you already know why we need things like ZIO. We wrap side effecting code into IO Monads to make it referentially transparent. This allows us to push all the side effects to the boundary of our application and thus the inner functional core of the program is preserved.
 
-Let me explain the game a little before we start writing it. The computer will select a random word for you and will ask you to guess the word. You can guess one character at a time. Everytime you guess a character which ocurrs in the word, all occurences of that character will be revealed. If you guess all the characters which occur in the chosen word you win the game. If the number of guesses reaches 10 and you still haven't guessed all characters, you lose.
+Let me explain the game a little before we start writing it. The computer will select a random word for you and will ask you to guess the word. You can guess one character at a time. Every time you guess a character which occurs in the word, all occurrences of that character will be revealed. If you guess all the characters which occur in the chosen word you win the game. If the number of guesses reaches 10 and you still haven't guessed all characters, you lose.
 
 This is a good example to learn about the IO Monad because there are lots of side effects in this game. We need to collect user input like their name, each character they guess. We need to inform them whether their guess is right or wrong and in the end we need to tell them whether they won or lost the game. All these operations are side effects. So how can we write this application in a purely functional way?
 
@@ -22,7 +22,7 @@ This is a good example to learn about the IO Monad because there are lots of sid
 sbt new scala/hello-world.g8
 ```
 
-It will ask you for the project name enter "hangman". This will create an Hello World project for you. First thing to do is to replace the contents of the build.sbt with this one. The build.sbt which the hello world project generates has lots of comments and we need a simpler file. 
+It will ask you for the project name enter "hangman". This will create a Hello World project for you. First thing to do is to replace the contents of the build.sbt with this one. The build.sbt which the hello world project generates has lots of comments and we need a simpler file. 
 
 ```scala
 lazy val root = (project in file(".")).
@@ -53,7 +53,7 @@ object Hangman extends App {
 
 Right off the bat we see a fundamental difference between this App and the regular App which we use in Scala. This doesn't have the main method which returns Unit. Instead our main method is replaced by a run method which returns a value. This value represents our entire program. The runtime will lazily evaluate this program and thus our program will run.
 
-Our whole program is a value and it should always return this value whether our program runs successfully or it encouters and error. We have to do this by help of the redeem function of ScalaZ ZIO. It helps us return a value from our program in case of errors. The code below returns the value of ExitStatus(1) in case of errors and ExitStatus(0) in case of success. Note that the left side of the IO is Nothing. Here we are indicating that our program never throws an exception. This program will always return an ExitStatus.
+Our whole program is a value and it should always return this value whether our program runs successfully or it encounters an error. We have to do this by help of the redeem function of ScalaZ ZIO. It helps us return a value from our program in case of errors. The code below returns the value of ExitStatus(1) in case of errors and ExitStatus(0) in case of success. Note that the left side of the IO is Nothing. Here we are indicating that our program never throws an exception. This program will always return an ExitStatus.
 
 ```scala
     def run(args: List[String]) : IO[Nothing, ExitStatus] = {
@@ -66,7 +66,7 @@ Our whole program is a value and it should always return this value whether our 
     val hangman : IO[IOException, Unit] = ???
 ```
 
-We need a case class which holds the state of our game. Here the name attribute is the name of the person who is playing the game. Guesses is a set of all the guesses the player have made so far, and finally the word is the word which the player is trying to guess. When all characters which occurr in the randomly chosen word have been guessed the player wins. If the number of attempts reaches 10 and all characters have not been guessed the player loses.
+We need a case class which holds the state of our game. Here the name attribute is the name of the person who is playing the game. Guesses is a set of all the guesses the player have made so far, and finally the word is the word which the player is trying to guess. When all characters which occur in the randomly chosen word have been guessed the player wins. If the number of attempts reaches 10 and all characters have not been guessed the player loses.
 
 ```scala
 case class State(name: String, guesses: Set[Char] = Set.empty[Char], word: String) {
@@ -128,9 +128,9 @@ val getChoice : IO[IOException, Char] = for {
 } yield char
 ```
 
-We also need a functional random number generator. This is also an interesting problem. Functional programs are required to return the same output value for a specific input. Like `add(2, 2)` will always return a 4. However what to do about the random number generator? by design its supposed to return a different value each time its called with the same max value.
+We also need a functional random number generator. This is also an interesting problem. Functional programs are required to return the same output value for a specific input. Like `add(2, 2)` will always return a 4. However, what to do about the random number generator? by design it's supposed to return a different value each time it's called with the same max value.
 
-Once again we use the IO. We are using the `sync` method to wrap the scala.util.Random into the IO. Now outr program doesn't return a random number. it returns a value of type IO which lazily generates random numbers at the time of evaluation. No matter how many times you call the function above it will always return a value of type IO[Nothing, Int]. Thus this code is referentially transparent because it returns our intent of generating a random number. Not the random number itself.
+Once again we use the IO. We are using the `sync` method to wrap the scala.util.Random into the IO. Now our program doesn't return a random number. it returns a value of type IO which lazily generates random numbers at the time of evaluation. No matter how many times you call the function above it will always return a value of type IO[Nothing, Int]. Thus, this code is referentially transparent because it returns our intent of generating a random number. Not the random number itself.
 
 ```scala
 def nextInt(max: Int) : IO[Nothing, Int] = IO.sync(scala.util.Random.nextInt(max))
@@ -146,7 +146,7 @@ val chooseWord: IO[IOException, String] = for {
 
 Since IO is a Monad we can use the scala for comprehension to unwrap the values. 
 
-We finally need one last helper method before we start writing the logic of the game. We need a method to render the State of the game. When the game starts we show " - " for each character. the player can count these and determine the total number of chacters in the word. Now each time the player guesses the character correctly we display all occurrences of that character. Others are still rendered as " - ". We also show all characters the player has guessed so far.
+We finally need one last helper method before we start writing the logic of the game. We need a method to render the State of the game. When the game starts we show " - " for each character. the player can count these and determine the total number of characters in the word. Now each time the player guesses the character correctly we display all occurrences of that character. Others are still rendered as " - ". We also show all characters the player has guessed so far.
 
 ```scala
 def renderState(state: State) : IO[IOException, Unit] = {
@@ -160,7 +160,7 @@ def renderState(state: State) : IO[IOException, Unit] = {
 }
 ```
 
-OK. So now we have all our helper methods in place. So let's write the main logic of the game. We start the game by greeting the player and then asking the player his/her name. Once we have that we randomly pick the word which the player has to guess and we render the create and render the initial state of the game. We finally start the game loop. The game loop asks the player to guess a new character.
+OK. So, now we have all our helper methods in place. So let's write the main logic of the game. We start the game by greeting the player and then asking the player his/her name. Once we have that we randomly pick the word which the player has to guess and we render the create and render the initial state of the game. We finally start the game loop. The game loop asks the player to guess a new character.
 
 ```scala
 val hangman : IO[IOException, Unit] = for {
@@ -175,7 +175,7 @@ val hangman : IO[IOException, Unit] = for {
 def gameLoop(state: State) : IO[IOException, State] = ???
 ```
 
-The game loop is the method which decides whether its time to terminate the game or keep playing. If the decision is to keep playing then it recursively calls itself.
+The game loop is the method which decides whether it's time to terminate the game or keep playing. If the decision is to keep playing then it recursively calls itself.
 
 ```scala
 def gameLoop(state: State) : IO[IOException, State] = {
