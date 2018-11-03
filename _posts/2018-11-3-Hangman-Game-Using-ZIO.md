@@ -145,8 +145,6 @@ val chooseWord: IO[IOException, String] = for {
 } yield Dictionary.lift(rand).getOrElse("Bug in the program!")
 ```
 
-Since IO is a Monad we can use the scala for comprehension to unwrap the values. 
-
 We finally need one last helper method before we start writing the logic of the game. We need a method to render the State of the game. When the game starts we show " - " for each character. the player can count these and determine the total number of characters in the word. Now each time the player guesses the character correctly we display all occurrences of that character. Others are still rendered as " - ". We also show all characters the player has guessed so far.
 
 ```scala
