@@ -194,8 +194,11 @@ def gameLoop(state: State) : IO[IOException, State] = {
 ```
 
 The game is pretty cute and I had a fun time playing it with my children. I hope to teach them the IO Monad :)
+Thanks to [John De Goes][2] and [Scala Kiev Meetup][3] for spending time and effort in doing this. 
 
 The complete code of this game is located in my [github][6] repo.
+
+If you want to discover more such awesome technical talks for the Scala language, please subscribe to the [/r/ScalaConferenceVideos][7] channel.
 
 [1]: https://www.youtube.com/watch?v=XONTFZ4afY0
 [2]: https://twitter.com/jdegoes
@@ -203,4 +206,4 @@ The complete code of this game is located in my [github][6] repo.
 [4]: https://github.com/scalaz/scalaz-zio
 [5]: https://github.com/abhsrivastava/hangman/blob/master/src/main/resources/words.txt
 [6]: https://github.com/abhsrivastava/hangman
-
+[7]: https://old.reddit.com/r/ScalaConferenceVideos/
