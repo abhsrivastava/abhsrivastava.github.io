@@ -4,7 +4,7 @@ title:      "Building the Hangman Game using ScalaZ ZIO"
 subtitle:   "Let's learn the use of IO Monad with this fun game"
 date:       2018-11-03 12:00:00
 author:     "Abhishek Srivastava"
-header-img: "img/space-needle-bg.jpg"
+header-img: "img/satelliterev4.jpg"
 ---
 
 I came across this [fantastic talk][1] delivered by [John De Goes][2] for [Scala Kiev Meetup][3]. In this talk
