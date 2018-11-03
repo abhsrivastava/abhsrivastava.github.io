@@ -183,7 +183,7 @@ def gameLoop(state: State) : IO[IOException, State] = {
         guess <- getChoice
         state <- IO.now(state.copy(guesses = state.guesses + guess))
         _ <- renderState(state)
-        loop <- if (state.playerWon) putStrLn(s"Congratulations ${state.name} you won the game!").const(true)
+        loop <- if (state.playerWon) putStrLn(s"Congratulations ${state.name} you won the game!").const(false)
                 else if (state.playerLost) putStrLn(s"Sorry ${state.name} you lost the game. The word was ${state.word}").map(_ => false).const(false)
                 else if (state.word.contains(guess)) putStrLn(s"You guessed correctly!").const(true)
                 else putStrLn(s"That's wrong. but keep trying!").const(true)
