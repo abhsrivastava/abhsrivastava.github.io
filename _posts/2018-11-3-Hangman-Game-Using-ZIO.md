@@ -67,7 +67,7 @@ Our whole program is a value and it should always return this value whether our 
     val hangman : IO[IOException, Unit] = ???
 ```
 
-We need a case class which holds the state of our game. Here we capture the name of the player in the name attribute. We need to capture all the guesses which the player has made in a Set and finally the word which the player has to guess. We have a property which captures all the failed guesses. This helps us determine whether to terminate the game or not. We also have two properties to determine if the player won or lost.
+We need a case class which holds the state of our game. Here we capture the name of the player in the name attribute. We need to capture all the guesses which the player has made in a Set and finally the word which the player has to guess. Furthermore, we have 3 functions which return us the number of failed guesses, whether the player has won or whether s/he has lost the game.
 
 ```scala
 case class State(name: String, guesses: Set[Char] = Set.empty[Char], word: String) {
@@ -174,7 +174,7 @@ val hangman : IO[IOException, Unit] = for {
 def gameLoop(state: State) : IO[IOException, State] = ???
 ```
 
-The game loop is the method which decides whether it's time to terminate the game or keep playing. If the decision is to keep playing then it recursively calls itself.
+In the gameLoop method we ask the player to make his/her guess. We update the game state with the guess the player made. We render the updated state of the game. Now we have to make a decision on whether to terminate the game or to keep playing. If the decision is to keep playing then we recursively call the game loop with the updated state. To check if we have to terminate the loop we look at the playerWon and playerLost properties.
 
 ```scala
 def gameLoop(state: State) : IO[IOException, State] = {
