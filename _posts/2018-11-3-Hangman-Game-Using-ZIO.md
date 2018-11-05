@@ -7,7 +7,7 @@ author:     "Abhishek Srivastava"
 header-img: "img/satelliterev4.jpg"
 ---
 
-I came across this [fantastic talk][1] delivered by [John De Goes][2] for [Scala Kiev Meetup][3]. In this talk
+I came across this [fantastic talk][1] delivered by [John De Goes][2] for [Scala Kyiv Meetup][3]. In this talk
 he implements a small fun game called Hangman and in the process he teaches us the [ZIO][4] Library. 
 
 I found the audio of the talk to be a little choppy and so I decided to write this blog and summarize my learnings from the talk.
@@ -192,7 +192,7 @@ def gameLoop(state: State) : IO[IOException, State] = {
 ```
 
 The game is pretty cute and I had a fun time playing it with my children. I hope to teach them the IO Monad :)
-Thanks to [John De Goes][2] and [Scala Kiev Meetup][3] for spending time and effort in doing this. 
+Thanks to [John De Goes][2] and [Scala Kyiv Meetup][3] for spending time and effort in doing this. 
 
 The complete code of this game is located in my [github][6] repo.
 
